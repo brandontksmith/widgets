@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>The Uber of Widgets</title>
+		
+		<!-- Include Stylesheets -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="js/node_modules/select2/dist/css/select2.min.css" />
+		
+		<!-- Include Scripts -->
+		<script type="text/javascript" src="js/node_modules/underscore/underscore-min.js"></script>
+		<script type="text/javascript" src="js/node_modules/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="js/node_modules/select2/dist/js/select2.min.js"></script>
+		<script type="text/javascript" src="js/node_modules/backbone/backbone-min.js"></script>
+	</head>
+	
+	<body>
+		<script id="widget-added-notification" type="text/template">
+			<div class="notification">
+				The widget has been added to your shopping cart.
+			</div>
+		</script>
+		
+		<script id="checkout-widget" type="text/template">
+			<div class="co-widget">
+				<div class="clearfix">
+					<h4 class="pull-left">Widget <%= widgetTypeValue %></h4>
+					<button class="btn btn-xs btn-default pull-right co-widget-trash-btn"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+				</div>
+				
+				<div class="co-widget-info">
+					<div class="co-widget-info-prop co-widget-finish"><%= widgetFinishValue %></div>
+					<div class="co-widget-info-prop co-widget-size"><%= widgetSizeValue %></div>
+				</div>
+			</div>
+		</script>
+		
+		<script id="widget" type="text/template">
+			<div class="co-widget">
+				<div class="clearfix">
+					<h4 class="pull-left">Widget <%= widgetTypeValue %></h4>
+					<button class="btn btn-md btn-primary pull-right widget-add-btn"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</button>
+				</div>
+				
+				<div class="co-widget-info">
+					<div class="co-widget-info-prop co-widget-finish"><%= widgetFinishValue %></div>
+					<div class="co-widget-info-prop co-widget-size"><%= widgetSizeValue %></div>
+					<div class="co-widget-info-prop co-widget-quantity">In-Stock (<%= quantity %> Available)</div>
+				</div>
+			</div>
+		</script>
+		
+		<script id="widget-edit-quantity" type="text/template">
+			<div class="co-widget">
+				<div class="clearfix">
+					<h4 class="pull-left">Widget <%= widgetTypeValue %></h4>
+				</div>
+				
+				<div class="co-widget-info">
+					<div class="co-widget-info-prop co-widget-finish"><%= widgetFinishValue %></div>
+					<div class="co-widget-info-prop co-widget-size"><%= widgetSizeValue %></div>
+					<div class="co-widget-info-prop co-widget-quantity"><input type="text" name="quantity" class="form-control" value="<%= quantity %>" /></div>
+					<div class="co-widget-info-prop co-widget-btn-save btn btn-sm btn-success" style="color: #FFFFFF;">Save</div>
+				</div>
+			</div>
+		</script>
+		
+		<nav id="nav" class="nav">
+			<div class="logo-name">
+				<h3><span class="larger">T</span>he <span class="larger">U</span>ber <span class="larger">o</span>f <span class="larger">W</span>idgets</h3>
+				<h4>By Brandon T. K. Smith, Aug. 5</h4>
+			</div>
+			
+			<ul>
+				<li class="active"><a href="#/browse"><i class="fa fa-chrome" aria-hidden="true"></i> Browse Widgets</a></li>
+				<li><a href="#/widgets/add"><i class="fa fa-plus-square" aria-hidden="true"></i> Add Widget</a></li>
+				<li><a href="#/widgets/edit-quantity"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Manage Quantities</a></li>
+			</ul>
+			
+			<ul class="right">
+				<li class="shopping-cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i> <span class="hide-mobile">Checkout</span></li>
+			</ul>
+		</nav>
+		
+		<div id="checkout" class="checkout">
+			<h3>Your Shopping Cart</h3>
+			
+			<div id="co-widgets"></div>
+			
+			<div class="clearfix">
+				<button id"continueShopping" class="btn btn-md btn-default pull-left">Continue Shopping</button>
+				<button id="emptyCart" class="btn btn-md btn-default pull-right">Empty Cart</button>
+			</div>
+		</div>
+		
+		<div id="container" class="container-fluid" style="padding-top: 75px;">
+			<div id="page-manage-quantities" style="display: none;">
+				<div id="widget-quantities"></div>
+			</div>
+			
+			<div id="page-browse" style="display: none;">
+				<div id="search" class="browse">
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Widget Type</label>
+								<select name="type" class="form-control">
+									<option value="0">Select Type</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Widget Finish</label>
+								<select name="finish" class="form-control">
+									<option value="0">Select Finish</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Widget Size</label>
+								<select name="size" class="form-control">
+									<option value="0">Select Size</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<button id="search-submit" class="btn btn-primary" style="margin-top: 21px; width: 48%; margin-right: 1%;">Filter Results</button>
+							<button id="search-reset" class="btn btn-default" style="margin-top: 21px; width: 48%;">Reset</button>
+						</div>
+					</div>
+				</div>
+				
+				<h3>Available Widgets</h3>
+				
+				<div id="widgets" class="widgets"></div>
+			</div>
+			
+			<div id="page-add-widget" style="display: none;">
+				<div class="form-wrapper">
+					<h3 style="margin-top: 0; padding-top: 0;">Add Widget</h3>
+					
+					<p style="font-style: italic;">Please note that you can add a new Type, Finish, and Size by entering a new value in the dropdown.</p>
+					
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Widget Type</label>
+								<select name="widgetType" class="form-control"></select>
+							</div>
+						</div>
+						
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Widget Finish</label>
+								<select name="widgetFinish" class="form-control"></select>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Widget Size</label>
+								<select name="widgetSize" class="form-control"></select>
+							</div>
+						</div>
+						
+						<div class="col-sm-3">
+							<div class="form-group">
+								<label>Quantity</label>
+								<input type="text" name="quantity" class="form-control" />
+							</div>
+						</div>
+					</div>
+					
+					<button id="addWidget" class="btn btn-primary">Add Widget</button>
+				</div>
+				
+				<div class="form-wrapper" style="margin-top: 15px;">
+					<h3 style="margin-top: 0; padding-top: 0;">Add Widget Properties</h3>
+										
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label>Widget Type</label>
+								<input name="widgetTypeName" class="form-control" />
+							</div>
+							
+							<button id="addWidgetType" class="btn btn-primary">Add Widget Type</button>
+						</div>
+						
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label>Widget Finish</label>
+								<input name="widgetFinishName" class="form-control" />
+							</div>
+							
+							<button id="addWidgetFinish" class="btn btn-primary">Add Widget Finish</button>
+						</div>
+						
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label>Widget Size</label>
+								<input name="widgetSizeName" class="form-control" />
+							</div>
+							
+							<button id="addWidgetSize" class="btn btn-primary">Add Widget Size</button>
+						</div>
+					</div>
+				</div>
+				
+				
+			</div>
+			
+			<div id="page-manage-quantities" style="display: none;"></div>
+		</div>
+		
+		<script type="text/javascript" src="js/app.js"></script>
+	</body>
+</html>

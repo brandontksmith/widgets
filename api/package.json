@@ -1,0 +1,32 @@
+{
+  "name": "emocha-widget-api",
+  "version": "1.0.0",
+  "description": "Emocha Widget API / Backend",
+  "main": "bootstrap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandontksmith/widget-api.git"
+  },
+  "keywords": [
+    "Widget"
+  ],
+  "author": "Brandon Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brandontksmith/widget-api/issues"
+  },
+  "homepage": "https://github.com/brandontksmith/widget-api#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
