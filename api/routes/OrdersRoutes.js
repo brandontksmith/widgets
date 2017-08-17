@@ -1,3 +1,7 @@
+/**
+ * Contains routes used for Orders.
+ */
+
 'use strict';
 
 module.exports = function(app) {

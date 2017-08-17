@@ -8,6 +8,10 @@ app.views = {};
 
 Backbone.Model.prototype.idAttribute = '_id'; // MongoDB uses _id, not id
 
+/**
+ * Application Routes
+ */
+
 app.Router = Backbone.Router.extend({
 
 	routes: {
@@ -32,6 +36,10 @@ app.Router = Backbone.Router.extend({
 		$('#page-manage-quantities').fadeIn('fast');
 	}
 });
+
+/**
+ * Application Models
+ */
 
 app.models.Widget = Backbone.Model.extend({
 	idAttribute: "_id",
@@ -63,6 +71,10 @@ app.models.WidgetOption = Backbone.Model.extend({
 	}
 });
 
+/**
+ * Application Collections
+ */
+
 app.collections.WidgetTypes = Backbone.Collection.extend({
 	
 	model: app.models.WidgetOption,
@@ -86,6 +98,10 @@ app.collections.Widgets = Backbone.Collection.extend({
 	model: app.models.Widget,
 	url: 'http://brandontksmith.com:3000/widgets'
 });
+
+/**
+ * Application Views
+ */
 
 app.views.NavView = Backbone.View.extend({
 	
@@ -380,6 +396,10 @@ app.views.CheckoutWidgetView = Backbone.View.extend({
 	}
 });
 
+/**
+ * Begin bootstrap and setup of the Application; load required data i.e. widgets, types, finishes, sizes
+ */
+
 app.router = new app.Router();
 Backbone.history.start();
 
@@ -395,6 +415,8 @@ app.widgetsView = new app.views.WidgetsView({ collection: app.widgets });
 app.quantitiesView = new app.views.EditQuantitiesView({ collection: app.widgets });
 
 /*
+todo: figure out why this attempts to fetch /orders and not /orders/:id
+
 if (typeof window.localStorage !== 'undefined') {
 	var orderId = window.localStorage.getItem('orderId');
 	
@@ -505,9 +527,10 @@ $('#addWidgetSize').click(function() {
 	$('[name="widgetSizeName"]').val('');
 });
 
+// load items in the following order:
+// widget types, then widget finishes, next widget sizes, and then the widgets
+
 app.widgetTypes.fetch();
-//app.widgetFinishes.fetch();
-//app.widgetSizes.fetch();
 
 app.widgetTypes.on('sync', function() {
 	app.widgetFinishes.fetch();
@@ -520,5 +543,3 @@ app.widgetFinishes.on('sync', function() {
 app.widgetSizes.on('sync', function() {
 	app.widgets.fetch();
 });
-
-//$('[name="widgetType"], [name="widgetFinish"], [name="widgetSize"]').select2({ tags: true });
