@@ -296,7 +296,6 @@ app.views.WidgetView = Backbone.View.extend({
 		this.model.on('change', this.render, this);
 	},
 	
-	
 	addToCart: function(e) {
 		var widgets = [];
 		
@@ -308,7 +307,11 @@ app.views.WidgetView = Backbone.View.extend({
 		
 		widgets.push(this.model.get('_id'));
 		
-		app.order.save({ widgets: widgets });
+		app.order.save({ widgets: widgets }, { success: function(order) {
+			if (typeof window.localStorage !== 'undefined') {
+				window.localStorage.setItem('orderId', order.get('_id'));
+			}
+		}});
 		
 		$('#co-widgets').append(new app.views.CheckoutWidgetView({ model: this.model }).render());
 		
@@ -390,6 +393,24 @@ app.widgetSizes = new app.collections.WidgetSizes();
 
 app.widgetsView = new app.views.WidgetsView({ collection: app.widgets });
 app.quantitiesView = new app.views.EditQuantitiesView({ collection: app.widgets });
+
+/*
+if (typeof window.localStorage !== 'undefined') {
+	var orderId = window.localStorage.getItem('orderId');
+	
+	if (typeof orderId !== 'undefined' && orderId !== 'undefined' && orderId !== null) {
+		app.order = new app.models.Order({ _id: orderId });
+		
+		app.order.fetch({ success: function(order) {
+			var widgets = order.widgets;
+			
+			for (var i in widgets) {
+				$('#co-widgets').append(new app.views.CheckoutWidgetView({ model: widgets[i] }).render());
+			}
+		}});
+	}
+}
+*/
 
 app.widgetTypes.on('add change', function() {
 	var select = $('[name="type"]');
@@ -498,7 +519,6 @@ app.widgetFinishes.on('sync', function() {
 
 app.widgetSizes.on('sync', function() {
 	app.widgets.fetch();
-	console.log(app.widgets);
 });
 
 //$('[name="widgetType"], [name="widgetFinish"], [name="widgetSize"]').select2({ tags: true });

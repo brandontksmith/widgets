@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var Order = mongoose.model('Orders');
 
 exports.getOrder = function(req, res) {
-	Order.findById(req.params.orderId, function(err, order) {
+	Order.findById(req.body.id, function(err, order) {
 		if (err) {
 			res.send(err);
 		}

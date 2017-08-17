@@ -5,9 +5,7 @@ module.exports = function(app) {
 	
 	app.route('/orders')
 	   .post(ordersController.createOrder)
-	   .put(ordersController.updateOrder);
-	
-	app.route('/orders/:orderId')
-		.get(ordersController.getOrder);
+	   .put(ordersController.updateOrder)
+	   .get(ordersController.getOrder);
 
 };
