@@ -1,5 +1,7 @@
 var app = {};
 
+app.order = null;
+
 app.models = {};
 app.collections = {};
 app.views = {};
@@ -40,6 +42,16 @@ app.models.Widget = Backbone.Model.extend({
 		widgetFinish: 0,
 		widgetSize: 0,
 		quantity: 0
+	}
+});
+
+app.models.Order = Backbone.Model.extend({
+	idAttribute: "_id",
+	
+	url: 'http://brandontksmith.com:3000/orders',
+	
+	defaults: {
+		widgets: []
 	}
 });
 
@@ -286,6 +298,18 @@ app.views.WidgetView = Backbone.View.extend({
 	
 	
 	addToCart: function(e) {
+		var widgets = [];
+		
+		if (app.order === null) {
+			app.order = new app.models.Order({});
+		} else {
+			var widgets = app.order.get('widgets');
+		}
+		
+		widgets.push(this.model.get('_id'));
+		
+		app.order.save({ widgets: widgets });
+		
 		$('#co-widgets').append(new app.views.CheckoutWidgetView({ model: this.model }).render());
 		
 		var notification = new app.views.NewWidgetNotificationView({}).render();
@@ -340,6 +364,15 @@ app.views.CheckoutWidgetView = Backbone.View.extend({
 	},
 	
 	removeFromCart: function() {
+		var widgets = app.order.get('widgets');
+		var index = widgets.indexOf(this.model.get('_id'));
+		
+		if (index >= 0) {
+			widgets.splice(index, 1);
+			
+			app.order.save({ widgets: widgets });
+		}
+		
 		this.$el.remove();
 	}
 });

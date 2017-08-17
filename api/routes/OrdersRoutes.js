@@ -4,9 +4,10 @@ module.exports = function(app) {
 	var ordersController = require('../controllers/OrdersController');
 	
 	app.route('/orders')
-	   .post(ordersController.createOrder);
+	   .post(ordersController.createOrder)
+	   .put(ordersController.updateOrder);
 	
 	app.route('/orders/:orderId')
-		.get(ordersController.getOrder)
-		.put(ordersController.updateOrder);
+		.get(ordersController.getOrder);
+
 };

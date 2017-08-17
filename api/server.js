@@ -4,6 +4,7 @@ var port 			= process.env.PORT || 3000;
 var cors			= require('cors');
 var mongoose		= require('mongoose');
 
+var ordersRoutes	= require('./models/Order');
 var Widget 			= require('./models/Widget');
 var WidgetType 		= require('./models/WidgetType');
 var WidgetFinish 	= require('./models/WidgetFinish');
@@ -29,7 +30,10 @@ cors = cors(corsOptions);
 app.use(cors);
 
 var routes = require('./routes/WidgetsRoutes');
+var ordersRoutes = require('./routes/OrdersRoutes');
+
 routes(app);
+ordersRoutes(app);
 
 app.listen(port);
 

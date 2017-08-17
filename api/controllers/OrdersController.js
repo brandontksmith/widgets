@@ -19,17 +19,17 @@ exports.createOrder = function(req, res) {
 	
 	var widgets = req.body.widgets;
 	
-	order.save({ widgets: widgets }, function(err, order) {
+	order.save(function(err, order) {
 		if (err) {
 			res.send(err);
 		}
-
+		
 		res.json(order);
 	});
 };
 
 exports.updateOrder = function(req, res) {
-	Order.findById(req.params.orderId, function(err, p) {
+	Order.findById(req.body._id, function(err, p) {
 	  	p.widgets = req.body.widgets;
 	  	
 	  	p.save();
