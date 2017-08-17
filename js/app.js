@@ -45,7 +45,7 @@ app.models.Widget = Backbone.Model.extend({
 	idAttribute: "_id",
 	
 	defaults: {
-		_id: 0,
+		//_id: 0,
 		widgetType: 0,
 		widgetFinish: 0,
 		widgetSize: 0,
@@ -66,7 +66,7 @@ app.models.Order = Backbone.Model.extend({
 app.models.WidgetOption = Backbone.Model.extend({
 	
 	defaults: {
-		_id: 0,
+		//_id: 0,
 		name: ''
 	}
 });
